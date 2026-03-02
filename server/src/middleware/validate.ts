@@ -100,6 +100,10 @@ export const productQueryValidation = [
         .optional()
         .isIn(["asc", "desc"])
         .withMessage("Order must be asc or desc"),
+    query("seller")
+        .optional()
+        .isMongoId()
+        .withMessage("Invalid seller ID"),
     query("category")
         .optional()
         .isIn([

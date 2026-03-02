@@ -10,6 +10,7 @@ interface Product {
     category: string;
     stockQuantity: number;
     image: string;
+    seller: { _id: string; name: string };
     createdAt: string;
     updatedAt: string;
 }
@@ -63,6 +64,7 @@ export const fetchProducts = createAsyncThunk(
             category?: string;
             sortBy?: string;
             order?: string;
+            seller?: string;
         },
         { rejectWithValue }
     ) => {
@@ -74,6 +76,7 @@ export const fetchProducts = createAsyncThunk(
             if (params.category) queryParams.set("category", params.category);
             if (params.sortBy) queryParams.set("sortBy", params.sortBy);
             if (params.order) queryParams.set("order", params.order);
+            if (params.seller) queryParams.set("seller", params.seller);
 
             const response = await api.get(`/products?${queryParams.toString()}`);
             return response.data;

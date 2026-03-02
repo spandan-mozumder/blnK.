@@ -45,8 +45,8 @@ export const AdminDashboard = () => {
   const dispatch = useAppDispatch();
   const { analytics, allOrders, loading: adminLoading, ordersPagination } =
     useAppSelector((state) => state.admin);
-  const { products, pagination: productPagination, loading: productLoading } =
-    useAppSelector((state) => state.products);
+  const { user } = useAppSelector((state) => state.auth);
+  const { products } = useAppSelector((state) => state.products);
   const [activeTab, setActiveTab] = useState<"overview" | "products" | "orders">(
     "overview"
   );
@@ -67,9 +67,13 @@ export const AdminDashboard = () => {
 
   useEffect(() => {
     dispatch(fetchAnalytics());
-    dispatch(fetchProducts({ page: 1, limit: 20 }));
+    const productParams: any = { page: 1, limit: 20 };
+    if (user?.role === "seller" && user?.id) {
+      productParams.seller = user.id;
+    }
+    dispatch(fetchProducts(productParams));
     dispatch(fetchAllOrders({ page: 1 }));
-  }, [dispatch]);
+  }, [dispatch, user]);
 
   useEffect(() => {
     if (!statsRef.current || !analytics) return;
@@ -187,7 +191,9 @@ export const AdminDashboard = () => {
         toast.success("Product updated successfully");
         setShowProductModal(false);
         resetForm();
-        dispatch(fetchProducts({ page: 1, limit: 20 }));
+        const refetchParams: any = { page: 1, limit: 20 };
+        if (user?.role === "seller" && user?.id) refetchParams.seller = user.id;
+        dispatch(fetchProducts(refetchParams));
       } else {
         toast.error("Failed to update product");
       }
@@ -197,7 +203,9 @@ export const AdminDashboard = () => {
         toast.success("Product created successfully");
         setShowProductModal(false);
         resetForm();
-        dispatch(fetchProducts({ page: 1, limit: 20 }));
+        const refetchParams2: any = { page: 1, limit: 20 };
+        if (user?.role === "seller" && user?.id) refetchParams2.seller = user.id;
+        dispatch(fetchProducts(refetchParams2));
       } else {
         toast.error("Failed to create product");
       }
@@ -209,7 +217,9 @@ export const AdminDashboard = () => {
       const result = await dispatch(deleteProduct(id));
       if (deleteProduct.fulfilled.match(result)) {
         toast.success("Product deleted");
-        dispatch(fetchProducts({ page: 1, limit: 20 }));
+        const delRefetchParams: any = { page: 1, limit: 20 };
+        if (user?.role === "seller" && user?.id) delRefetchParams.seller = user.id;
+        dispatch(fetchProducts(delRefetchParams));
         dispatch(fetchAnalytics());
       } else {
         toast.error("Failed to delete product");

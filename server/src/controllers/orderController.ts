@@ -118,7 +118,12 @@ export const createCheckoutSession = async (
             sessionId: session.id,
             url: session.url,
         });
-    } catch (error) {
+    } catch (error: any) {
+        if (error.type === "StripeAuthenticationError") {
+            log.error("Invalid Stripe API key configured");
+            res.status(500).json({ message: "Payment service is not configured correctly. Please contact support." });
+            return;
+        }
         log.error("Checkout session creation failed", error);
         res.status(500).json({ message: "Server error creating checkout session" });
     }

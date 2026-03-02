@@ -4,9 +4,8 @@ import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { loginUser, clearError } from "@/store/authSlice";
 import { Button } from "@/components/base/buttons/button";
 import { Input } from "@/components/base/input/input";
-import { Mail01, Lock01 } from "@untitledui/icons";
 import toast from "react-hot-toast";
-import { animate, stagger, createTimeline } from "animejs";
+import { createTimeline, stagger } from "animejs";
 
 export const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -90,7 +89,6 @@ export const LoginPage = () => {
               placeholder="Enter your email"
               value={email}
               onChange={(v) => setEmail(v)}
-              iconLeading={Mail01}
               isRequired
             />
           </div>
@@ -101,7 +99,6 @@ export const LoginPage = () => {
               placeholder="Enter your password"
               value={password}
               onChange={(v) => setPassword(v)}
-              iconLeading={Lock01}
               isRequired
             />
           </div>

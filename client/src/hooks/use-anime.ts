@@ -1,5 +1,5 @@
-import { useEffect, useRef, useCallback } from "react";
-import { animate, stagger, createTimeline, type Animation } from "animejs";
+import { useEffect, useRef } from "react";
+import { animate, stagger, createTimeline } from "animejs";
 
 export function useAnimeOnMount(
     selector: string,

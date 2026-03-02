@@ -8,7 +8,7 @@ import { Badge } from "@/components/base/badges/badges";
 import { LoadingIndicator } from "@/components/application/loading-indicator/loading-indicator";
 import { ShoppingCart01, ArrowLeft, Package, Clock } from "@untitledui/icons";
 import toast from "react-hot-toast";
-import { animate, stagger, createTimeline } from "animejs";
+import { createTimeline, stagger } from "animejs";
 
 export const ProductDetailPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -152,6 +152,12 @@ export const ProductDetailPage = () => {
           <p className="detail-info mt-4 text-display-xs font-bold text-brand-tertiary" style={{ opacity: 0 }}>
             ${product.price.toFixed(2)}
           </p>
+
+          {product.seller?.name && (
+            <p className="detail-info mt-2 text-sm text-tertiary" style={{ opacity: 0 }}>
+              Sold by <span className="font-medium text-secondary">{product.seller.name}</span>
+            </p>
+          )}
 
           <p className="detail-info mt-6 text-md leading-relaxed text-secondary" style={{ opacity: 0 }}>
             {product.description}

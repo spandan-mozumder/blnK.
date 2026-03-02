@@ -30,6 +30,12 @@ export const OrderHistoryPage = () => {
   }, [dispatch]);
 
   useEffect(() => {
+    if (loading) {
+      prevOrderIds.current = "";
+    }
+  }, [loading]);
+
+  useEffect(() => {
     if (!listRef.current || loading || orders.length === 0) return;
     const currentIds = orders.map((o) => o._id).join(",");
     if (currentIds === prevOrderIds.current) return;
@@ -58,7 +64,6 @@ export const OrderHistoryPage = () => {
         <div>
           <EmptyState
             title="No orders yet"
-            description="Start shopping to see your order history here."
           />
           <div className="mt-6 text-center">
             <Button

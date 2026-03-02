@@ -8,7 +8,7 @@ import { Input } from "@/components/base/input/input";
 import { Badge } from "@/components/base/badges/badges";
 import { LoadingIndicator } from "@/components/application/loading-indicator/loading-indicator";
 import { EmptyState } from "@/components/application/empty-state/empty-state";
-import { SearchMd, ShoppingCart01 } from "@untitledui/icons";
+import { ShoppingCart01 } from "@untitledui/icons";
 import toast from "react-hot-toast";
 import { animate, stagger } from "animejs";
 
@@ -72,6 +72,18 @@ export const ProductListPage = () => {
   ]);
 
   useEffect(() => {
+    dispatch(
+      fetchProducts({
+        page: 1,
+        search: "",
+        category: filters.category,
+        sortBy: filters.sortBy,
+        order: filters.order,
+      })
+    );
+  }, []);
+
+  useEffect(() => {
     dispatch(setFilters({ search: debouncedSearch, page: 1 }));
   }, [debouncedSearch, dispatch]);
 
@@ -85,6 +97,12 @@ export const ProductListPage = () => {
       ease: "outExpo",
     });
   }, []);
+
+  useEffect(() => {
+    if (loading) {
+      prevProductIds.current = "";
+    }
+  }, [loading]);
 
   useEffect(() => {
     if (!gridRef.current || loading || products.length === 0) return;
@@ -152,7 +170,6 @@ export const ProductListPage = () => {
             placeholder="Search products..."
             value={searchInput}
             onChange={(v) => setSearchInput(v)}
-            iconLeading={SearchMd}
             size="md"
           />
         </div>
@@ -189,7 +206,6 @@ export const ProductListPage = () => {
       ) : products.length === 0 ? (
         <EmptyState
           title="No products found"
-          description="Try adjusting your search or filter criteria."
         />
       ) : (
         <>
@@ -252,6 +268,11 @@ export const ProductListPage = () => {
                   <p className="mb-4 line-clamp-2 text-sm text-tertiary">
                     {product.description}
                   </p>
+                  {product.seller?.name && (
+                    <p className="mb-3 text-xs font-medium text-quaternary">
+                      by {product.seller.name}
+                    </p>
+                  )}
                   <Button
                     color="primary"
                     size="sm"

@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router";
 import { Button } from "@/components/base/buttons/button";
 import { XCircle, ShoppingCart01 } from "@untitledui/icons";
-import { animate, createTimeline } from "animejs";
+import { createTimeline } from "animejs";
 
 export const CheckoutCancelPage = () => {
   const navigate = useNavigate();

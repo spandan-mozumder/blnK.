@@ -3,7 +3,6 @@ import { Link, Outlet, useNavigate, useLocation } from "react-router";
 import { useAppSelector, useAppDispatch } from "@/store/hooks";
 import { logout } from "@/store/authSlice";
 import { Button } from "@/components/base/buttons/button";
-import { Badge } from "@/components/base/badges/badges";
 import {
   ShoppingCart01,
   LogOut01,
@@ -11,19 +10,16 @@ import {
   BarChartSquare02,
   Package,
   ClockRewind,
-  Home01,
 } from "@untitledui/icons";
 import toast from "react-hot-toast";
 import { animate, stagger } from "animejs";
 
 const NavLink = ({
-  to,
   icon: Icon,
   label,
   active,
   onClick,
 }: {
-  to: string;
   icon: any;
   label: string;
   active: boolean;
@@ -86,7 +82,7 @@ export const AppLayout = () => {
 
             <nav className="nav-item hidden items-center gap-1 md:flex" style={{ opacity: 0 }}>
               <NavLink
-                to="/products"
+
                 icon={Package}
                 label="Products"
                 active={isActive("/products")}
@@ -94,7 +90,6 @@ export const AppLayout = () => {
               />
               {user && (
                 <NavLink
-                  to="/orders"
                   icon={ClockRewind}
                   label="Orders"
                   active={isActive("/orders")}
@@ -103,7 +98,6 @@ export const AppLayout = () => {
               )}
               {(user?.role === "admin" || user?.role === "seller") && (
                 <NavLink
-                  to="/admin"
                   icon={BarChartSquare02}
                   label="Dashboard"
                   active={isActive("/admin")}

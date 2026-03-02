@@ -38,8 +38,14 @@ export const getProducts = async (
         const sortObj: Record<string, 1 | -1> = {};
         sortObj[sortBy] = order;
 
+        const sellerId = req.query.seller as string;
+        if (sellerId) {
+            query.seller = sellerId;
+        }
+
         const [products, totalCount] = await Promise.all([
             Product.find(query)
+                .populate("seller", "name")
                 .sort(sortObj)
                 .skip(skip)
                 .limit(limit)
@@ -71,7 +77,7 @@ export const getProductById = async (
     res: Response
 ): Promise<void> => {
     try {
-        const product = await Product.findById(req.params.id).lean();
+        const product = await Product.findById(req.params.id).populate("seller", "name").lean();
         if (!product) {
             res.status(404).json({ message: "Product not found" });
             return;
@@ -104,6 +110,7 @@ export const createProduct = async (
             category,
             stockQuantity,
             image: image || "",
+            seller: req.user!._id,
         });
 
         await product.save();

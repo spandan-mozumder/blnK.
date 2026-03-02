@@ -7,6 +7,7 @@ export interface IProduct extends Document {
     category: string;
     stockQuantity: number;
     image: string;
+    seller: mongoose.Types.ObjectId;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -56,6 +57,11 @@ const productSchema = new Schema<IProduct>(
             type: String,
             default: "",
         },
+        seller: {
+            type: Schema.Types.ObjectId,
+            ref: "User",
+            required: [true, "Seller is required"],
+        },
     },
     {
         timestamps: true,
@@ -66,6 +72,7 @@ productSchema.index({ title: "text" });
 productSchema.index({ category: 1 });
 productSchema.index({ price: 1 });
 productSchema.index({ createdAt: -1 });
+productSchema.index({ seller: 1 });
 
 const Product = mongoose.model<IProduct>("Product", productSchema);
 export default Product;

@@ -4,9 +4,8 @@ import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { registerUser, clearError } from "@/store/authSlice";
 import { Button } from "@/components/base/buttons/button";
 import { Input } from "@/components/base/input/input";
-import { User01, Mail01, Lock01 } from "@untitledui/icons";
 import toast from "react-hot-toast";
-import { animate, stagger, createTimeline } from "animejs";
+import { createTimeline, stagger } from "animejs";
 
 export const RegisterPage = () => {
   const [name, setName] = useState("");
@@ -93,7 +92,6 @@ export const RegisterPage = () => {
               placeholder="Enter your name"
               value={name}
               onChange={(v) => setName(v)}
-              iconLeading={User01}
               isRequired
             />
           </div>
@@ -104,7 +102,6 @@ export const RegisterPage = () => {
               placeholder="Enter your email"
               value={email}
               onChange={(v) => setEmail(v)}
-              iconLeading={Mail01}
               isRequired
             />
           </div>
@@ -115,7 +112,6 @@ export const RegisterPage = () => {
               placeholder="Create a password"
               value={password}
               onChange={(v) => setPassword(v)}
-              iconLeading={Lock01}
               isRequired
             />
           </div>
@@ -126,7 +122,6 @@ export const RegisterPage = () => {
               placeholder="Confirm your password"
               value={confirmPassword}
               onChange={(v) => setConfirmPassword(v)}
-              iconLeading={Lock01}
               isRequired
             />
           </div>

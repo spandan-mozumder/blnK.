@@ -56,7 +56,6 @@ export const CartPage = () => {
         <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
           <EmptyState
             title="Your cart is empty"
-            description="Add some products to your cart to get started."
           />
           <div className="mt-6 text-center">
             <Button
