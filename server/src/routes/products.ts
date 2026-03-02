@@ -7,7 +7,7 @@ import {
     deleteProduct,
     getCategories,
 } from "../controllers/productController";
-import { authenticate, authorizeAdmin } from "../middleware/auth";
+import { authenticate, authorizeAdmin, authorizeSellerOrAdmin } from "../middleware/auth";
 import {
     productValidation,
     productUpdateValidation,
@@ -23,17 +23,17 @@ router.get("/:id", getProductById);
 router.post(
     "/",
     authenticate,
-    authorizeAdmin,
+    authorizeSellerOrAdmin,
     productValidation,
     createProduct
 );
 router.put(
     "/:id",
     authenticate,
-    authorizeAdmin,
+    authorizeSellerOrAdmin,
     productUpdateValidation,
     updateProduct
 );
-router.delete("/:id", authenticate, authorizeAdmin, deleteProduct);
+router.delete("/:id", authenticate, authorizeSellerOrAdmin, deleteProduct);
 
 export default router;

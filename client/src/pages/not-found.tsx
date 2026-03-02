@@ -37,7 +37,6 @@ export function NotFound() {
                 "-=200"
             );
 
-        // Floating background shapes
         const shapes = containerRef.current.querySelectorAll(".floating-shape");
         shapes.forEach((shape, i) => {
             animate(shape, {
@@ -56,7 +55,6 @@ export function NotFound() {
             className="relative flex min-h-screen items-start overflow-hidden bg-primary py-16 md:items-center md:py-24"
             ref={containerRef}
         >
-            {/* Floating shapes */}
             <div className="absolute inset-0 pointer-events-none overflow-hidden">
                 {[...Array(6)].map((_, i) => (
                     <div

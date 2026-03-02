@@ -88,7 +88,6 @@ export function useScrollReveal(selector: string) {
         const targets = containerRef.current.querySelectorAll(selector);
         if (targets.length === 0) return;
 
-        // Set initial state
         targets.forEach((t) => {
             (t as HTMLElement).style.opacity = "0";
             (t as HTMLElement).style.transform = "translateY(30px)";

@@ -2,6 +2,9 @@ import { Request, Response } from "express";
 import { validationResult } from "express-validator";
 import Product from "../models/Product";
 import { AuthRequest } from "../middleware/auth";
+import createLogger from "../utils/logger";
+
+const log = createLogger("Products");
 
 export const getProducts = async (
     req: Request,
@@ -58,7 +61,7 @@ export const getProducts = async (
             },
         });
     } catch (error) {
-        console.error("Get products error:", error);
+        log.error("Failed to fetch products", error);
         res.status(500).json({ message: "Server error fetching products" });
     }
 };
@@ -75,7 +78,7 @@ export const getProductById = async (
         }
         res.json({ product });
     } catch (error) {
-        console.error("Get product error:", error);
+        log.error("Failed to fetch product", error);
         res.status(500).json({ message: "Server error fetching product" });
     }
 };
@@ -110,7 +113,7 @@ export const createProduct = async (
             product,
         });
     } catch (error) {
-        console.error("Create product error:", error);
+        log.error("Failed to create product", error);
         res.status(500).json({ message: "Server error creating product" });
     }
 };
@@ -142,7 +145,7 @@ export const updateProduct = async (
             product,
         });
     } catch (error) {
-        console.error("Update product error:", error);
+        log.error("Failed to update product", error);
         res.status(500).json({ message: "Server error updating product" });
     }
 };
@@ -161,7 +164,7 @@ export const deleteProduct = async (
 
         res.json({ message: "Product deleted successfully" });
     } catch (error) {
-        console.error("Delete product error:", error);
+        log.error("Failed to delete product", error);
         res.status(500).json({ message: "Server error deleting product" });
     }
 };
@@ -181,7 +184,7 @@ export const getCategories = async (
         ];
         res.json({ categories });
     } catch (error) {
-        console.error("Get categories error:", error);
+        log.error("Failed to fetch categories", error);
         res.status(500).json({ message: "Server error" });
     }
 };

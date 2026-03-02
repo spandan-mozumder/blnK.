@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef, type FormEvent } from "react";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { fetchAnalytics, fetchAllOrders } from "@/store/adminSlice";
+import api from "@/api/axios";
 import {
   fetchProducts,
   createProduct,
@@ -59,6 +60,8 @@ export const AdminDashboard = () => {
     stockQuantity: "",
     image: "",
   });
+  const [selectedImageFile, setSelectedImageFile] = useState<File | null>(null);
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
   const statsRef = useRef<HTMLDivElement>(null);
   const tabContentRef = useRef<HTMLDivElement>(null);
 
@@ -80,7 +83,6 @@ export const AdminDashboard = () => {
       ease: "outExpo",
     });
 
-    // Animate stat numbers
     const statValues = statsRef.current.querySelectorAll(".stat-value");
     statValues.forEach((el) => {
       const target = parseFloat(el.getAttribute("data-value") || "0");
@@ -137,18 +139,44 @@ export const AdminDashboard = () => {
       stockQuantity: product.stockQuantity.toString(),
       image: product.image || "",
     });
+    setSelectedImageFile(null);
     setShowProductModal(true);
+  };
+
+  const handleImageFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setSelectedImageFile(e.target.files[0]);
+    }
   };
 
   const handleSubmitProduct = async (e: FormEvent) => {
     e.preventDefault();
+    setIsUploadingImage(true);
+    let imageUrl = productForm.image;
+
+    try {
+      if (selectedImageFile) {
+        const formData = new FormData();
+        formData.append("image", selectedImageFile);
+        const uploadRes = await api.post("/upload", formData);
+        imageUrl = uploadRes.data.imageUrl;
+      }
+    } catch (uploadError) {
+       console.error("Image upload failed", uploadError);
+       toast.error("Failed to upload image. Please try again.");
+       setIsUploadingImage(false);
+       return; // Abort product submission
+    }
+
+    setIsUploadingImage(false);
+
     const data = {
       title: productForm.title,
       description: productForm.description,
       price: parseFloat(productForm.price),
       category: productForm.category,
       stockQuantity: parseInt(productForm.stockQuantity),
-      image: productForm.image,
+      image: imageUrl,
     };
 
     if (editingProduct) {
@@ -758,14 +786,27 @@ export const AdminDashboard = () => {
                       ))}
                     </select>
                   </div>
-                  <Input
-                    label="Image URL"
-                    value={productForm.image}
-                    onChange={(v) =>
-                      setProductForm({ ...productForm, image: v })
-                    }
-                    placeholder="https://example.com/image.jpg"
-                  />
+                  <div>
+                     <label className="mb-1.5 block text-sm font-medium text-secondary">
+                        Product Image
+                     </label>
+                     <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageFileChange}
+                        className="w-full rounded-lg border border-primary bg-primary px-3 py-2 text-sm text-primary file:mr-4 file:rounded-full file:border-0 file:bg-brand-primary file:px-4 file:py-2 file:text-sm file:font-semibold file:text-brand-700 hover:file:bg-brand-100"
+                     />
+                     {productForm.image && !selectedImageFile && (
+                        <p className="mt-2 text-xs text-tertiary">
+                           Current image: <a href={productForm.image} target="_blank" rel="noreferrer" className="text-brand hover:underline">View</a>
+                        </p>
+                     )}
+                     {selectedImageFile && (
+                        <p className="mt-2 text-xs text-brand">
+                           Selected file: {selectedImageFile.name}
+                        </p>
+                     )}
+                  </div>
                 </div>
               </div>
               <div className="flex items-center justify-end gap-3 border-t border-secondary p-6">
@@ -780,8 +821,8 @@ export const AdminDashboard = () => {
                 >
                   Cancel
                 </Button>
-                <Button color="primary" size="md" type="submit">
-                  {editingProduct ? "Update Product" : "Create Product"}
+                <Button color="primary" size="md" type="submit" isDisabled={isUploadingImage}>
+                  {isUploadingImage ? "Uploading..." : editingProduct ? "Update Product" : "Create Product"}
                 </Button>
               </div>
             </form>

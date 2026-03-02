@@ -3,21 +3,31 @@ import cors from "cors";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 import dotenv from "dotenv";
+dotenv.config();
+import createLogger from "./utils/logger";
+
+const log = createLogger("Server");
+
 import connectDB from "./config/db";
 import authRoutes from "./routes/auth";
 import productRoutes from "./routes/products";
 import orderRoutes from "./routes/orders";
 import adminRoutes from "./routes/admin";
+import uploadRoutes from "./routes/uploadRoutes";
 import { stripeWebhook } from "./controllers/orderController";
-
-dotenv.config();
+import path from "path";
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
 app.use(
     cors({
-        origin: process.env.CLIENT_URL || "http://localhost:5173",
+        origin: [
+            "http://localhost:5173",
+            "http://localhost:5174",
+            "http://localhost:5175",
+            process.env.CLIENT_URL || "http://localhost:5173"
+        ],
         credentials: true,
         methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
         allowedHeaders: ["Content-Type", "Authorization"],
@@ -59,6 +69,9 @@ app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/api/upload", uploadRoutes);
+
+app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 
 app.get("/api/health", (_req, res) => {
     res.json({ status: "ok", timestamp: new Date().toISOString() });
@@ -67,7 +80,7 @@ app.get("/api/health", (_req, res) => {
 const startServer = async () => {
     await connectDB();
     app.listen(PORT, () => {
-        console.log(`Server running on port ${PORT}`);
+        log.info(`Server running on port ${PORT}`);
     });
 };
 

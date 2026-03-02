@@ -48,3 +48,15 @@ export const authorizeAdmin = (
     }
     next();
 };
+
+export const authorizeSellerOrAdmin = (
+    req: AuthRequest,
+    res: Response,
+    next: NextFunction
+): void => {
+    if (req.user?.role !== "admin" && req.user?.role !== "seller") {
+        res.status(403).json({ message: "Access denied. Sellers or Admins only." });
+        return;
+    }
+    next();
+};

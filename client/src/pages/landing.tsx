@@ -5,24 +5,41 @@ import { Badge } from "@/components/base/badges/badges";
 import {
   ShoppingCart01,
   Shield01,
-  Zap,
   ArrowRight,
   Star01,
   Truck01,
   Headphones01,
+  ShoppingBag01,
 } from "@untitledui/icons";
 import { animate, stagger, createTimeline } from "animejs";
+import { useAppSelector } from "@/store/hooks";
 
 const MUSIC_NOTES = ["♪", "♫", "♬", "♩", "🎵", "🎶"];
 
 export const LandingPage = () => {
   const navigate = useNavigate();
+  const user = useAppSelector((state) => state.auth.user);
+  const pageRef = useRef<HTMLDivElement>(null);
   const heroRef = useRef<HTMLDivElement>(null);
   const categoriesRef = useRef<HTMLDivElement>(null);
   const featuresRef = useRef<HTMLDivElement>(null);
   const ctaRef = useRef<HTMLDivElement>(null);
 
-  // Hero animation
+  useEffect(() => {
+    if (!pageRef.current) return;
+    const shapes = pageRef.current.querySelectorAll(".floating-shape");
+    shapes.forEach((shape, i) => {
+      animate(shape, {
+        translateY: [0, -20, 0],
+        translateX: [0, i % 2 === 0 ? 10 : -10, 0],
+        rotate: [0, i % 2 === 0 ? 15 : -15, 0],
+        duration: 3000 + i * 500,
+        loop: true,
+        ease: "inOutSine",
+      });
+    });
+  }, []);
+
   useEffect(() => {
     if (!heroRef.current) return;
     const tl = createTimeline({ defaults: { ease: "outExpo" } });
@@ -63,7 +80,6 @@ export const LandingPage = () => {
       );
   }, []);
 
-  // Categories animation
   useEffect(() => {
     if (!categoriesRef.current) return;
     const observer = new IntersectionObserver(
@@ -99,7 +115,6 @@ export const LandingPage = () => {
     return () => observer.disconnect();
   }, []);
 
-  // Features animation
   useEffect(() => {
     if (!featuresRef.current) return;
     const observer = new IntersectionObserver(
@@ -134,7 +149,6 @@ export const LandingPage = () => {
     return () => observer.disconnect();
   }, []);
 
-  // CTA animation
   useEffect(() => {
     if (!ctaRef.current) return;
     const observer = new IntersectionObserver(
@@ -195,14 +209,46 @@ export const LandingPage = () => {
   ];
 
   return (
-    <div className="flex min-h-dvh flex-col noise-overlay">
-      {/* ─── Hero Section ─── */}
+    <div className="flex min-h-dvh flex-col noise-overlay relative" ref={pageRef}>
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        {[...Array(8)].map((_, i) => (
+          <div
+            key={i}
+            className="floating-shape absolute rounded-full opacity-10"
+            style={{
+              width: `${40 + i * 20}px`,
+              height: `${40 + i * 20}px`,
+              background: `linear-gradient(135deg, #7c3aed, #6366f1)`,
+              top: `${5 + i * 12}%`,
+              left: `${3 + i * 12}%`,
+            }}
+          />
+        ))}
+      </div>
+
+      <div className="fixed top-6 right-6 z-50">
+        <Button
+          color="primary"
+          size="md"
+          iconLeading={ShoppingBag01}
+          onClick={() => navigate(user ? "/products" : "/login")}
+          className="glow-border shadow-lg"
+        >
+          To Store
+        </Button>
+      </div>
+
+      <div className="fixed top-6 left-6 z-50 px-4 py-2 rounded-lg backdrop-blur-sm bg-white/5 border border-white/10">
+        <span className="text-2xl font-bold text-brand-tertiary brand-underline text-shimmer">
+          blnK.
+        </span>
+      </div>
+
       <section className="relative overflow-hidden bg-primary" ref={heroRef}>
         <div className="orb orb-1" />
         <div className="orb orb-2" />
         <div className="orb orb-3" />
 
-        {/* Floating Music Notes */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           {MUSIC_NOTES.map((note, i) => (
             <span
@@ -222,14 +268,14 @@ export const LandingPage = () => {
 
         <div className="relative mx-auto max-w-7xl px-4 py-32 sm:px-6 sm:py-40 lg:px-8 lg:py-48">
           <div className="mx-auto max-w-3xl text-center">
-            <div className="hero-badge" style={{ opacity: 0 }}>
+            <div className="hero-badge flex justify-center" style={{ opacity: 0 }}>
               <Badge
                 size="lg"
                 color="brand"
                 type="pill-color"
                 className="mb-6"
               >
-                <Star01 className="size-3.5" data-icon />
+                <Star01 className="size-3.5 mr-2" data-icon />
                 New drops every week
               </Badge>
             </div>
@@ -280,7 +326,6 @@ export const LandingPage = () => {
         </div>
       </section>
 
-      {/* ─── Categories ─── */}
       <section className="bg-primary py-24 border-t border-secondary" ref={categoriesRef}>
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mb-14 text-center">
@@ -320,7 +365,6 @@ export const LandingPage = () => {
         </div>
       </section>
 
-      {/* ─── Features ─── */}
       <section className="bg-primary py-24 border-t border-secondary" ref={featuresRef}>
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mb-14 text-center">
@@ -328,7 +372,7 @@ export const LandingPage = () => {
               className="section-heading text-display-sm font-semibold text-primary"
               style={{ opacity: 0 }}
             >
-              Why shop with blnK?
+              Why shop with <span className="brand-underline">blnK.</span>?
             </h2>
             <p
               className="section-heading mt-3 text-lg text-tertiary"
@@ -360,7 +404,6 @@ export const LandingPage = () => {
         </div>
       </section>
 
-      {/* ─── CTA ─── */}
       <section className="bg-primary py-24 border-t border-secondary" ref={ctaRef}>
         <div className="mx-auto max-w-3xl px-4 text-center sm:px-6 lg:px-8">
           <h2
@@ -400,15 +443,14 @@ export const LandingPage = () => {
         </div>
       </section>
 
-      {/* ─── Footer ─── */}
       <footer className="border-t border-secondary bg-primary px-4 py-12">
         <div className="mx-auto max-w-7xl">
           <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
-            <span className="text-lg font-bold text-brand-tertiary text-shimmer">
-              blnK
+            <span className="text-lg font-bold text-brand-tertiary text-shimmer brand-underline">
+              blnK.
             </span>
             <p className="text-sm text-tertiary">
-              &copy; {new Date().getFullYear()} blnK. All rights reserved.
+              &copy; {new Date().getFullYear()} <span className="brand-underline">blnK.</span> All rights reserved.
             </p>
           </div>
         </div>

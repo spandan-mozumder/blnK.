@@ -2,6 +2,9 @@ import { Request, Response } from "express";
 import Order from "../models/Order";
 import Product from "../models/Product";
 import { AuthRequest } from "../middleware/auth";
+import createLogger from "../utils/logger";
+
+const log = createLogger("Admin");
 
 export const getSalesAnalytics = async (
     _req: AuthRequest,
@@ -90,7 +93,7 @@ export const getSalesAnalytics = async (
             dailySales,
         });
     } catch (error) {
-        console.error("Analytics error:", error);
+        log.error("Failed to fetch analytics", error);
         res.status(500).json({ message: "Server error fetching analytics" });
     }
 };
@@ -129,7 +132,7 @@ export const getAllOrders = async (
             },
         });
     } catch (error) {
-        console.error("Get all orders error:", error);
+        log.error("Failed to fetch orders", error);
         res.status(500).json({ message: "Server error" });
     }
 };

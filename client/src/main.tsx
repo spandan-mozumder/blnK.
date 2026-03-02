@@ -15,6 +15,8 @@ import { CheckoutSuccessPage } from "@/pages/checkout/success";
 import { CheckoutCancelPage } from "@/pages/checkout/cancel";
 import { OrderHistoryPage } from "@/pages/orders/order-history";
 import { AdminDashboard } from "@/pages/admin/dashboard";
+import { BecomeSellerPage } from "@/pages/become-seller/become-seller";
+import { ProfilePage } from "@/pages/profile/profile";
 import { ProtectedRoute, AdminRoute } from "@/components/route-guards";
 import { NotFound } from "@/pages/not-found";
 import { RouteProvider } from "@/providers/router-provider";
@@ -66,6 +68,22 @@ createRoot(document.getElementById("root")!).render(
                                     element={
                                         <ProtectedRoute>
                                             <OrderHistoryPage />
+                                        </ProtectedRoute>
+                                    }
+                                />
+                                <Route
+                                    path="/profile"
+                                    element={
+                                        <ProtectedRoute>
+                                            <ProfilePage />
+                                        </ProtectedRoute>
+                                    }
+                                />
+                                <Route
+                                    path="/become-seller"
+                                    element={
+                                        <ProtectedRoute>
+                                            <BecomeSellerPage />
                                         </ProtectedRoute>
                                     }
                                 />

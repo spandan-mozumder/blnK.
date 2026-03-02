@@ -65,7 +65,7 @@ export const LoginPage = () => {
               to="/"
               className="mb-6 inline-block text-display-xs font-bold text-brand-tertiary text-shimmer"
             >
-              blnK
+              blnK.
             </Link>
           </div>
           <h1

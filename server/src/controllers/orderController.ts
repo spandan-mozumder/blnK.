@@ -3,6 +3,9 @@ import Stripe from "stripe";
 import Product from "../models/Product";
 import Order from "../models/Order";
 import { AuthRequest } from "../middleware/auth";
+import createLogger from "../utils/logger";
+
+const log = createLogger("Orders");
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
     apiVersion: "2025-04-30.basil" as Stripe.LatestApiVersion,
@@ -116,7 +119,7 @@ export const createCheckoutSession = async (
             url: session.url,
         });
     } catch (error) {
-        console.error("Checkout error:", error);
+        log.error("Checkout session creation failed", error);
         res.status(500).json({ message: "Server error creating checkout session" });
     }
 };
@@ -168,7 +171,7 @@ export const verifyPayment = async (
             res.status(400).json({ message: "Payment not completed" });
         }
     } catch (error) {
-        console.error("Payment verification error:", error);
+        log.error("Payment verification failed", error);
         res.status(500).json({ message: "Server error verifying payment" });
     }
 };
@@ -188,7 +191,7 @@ export const stripeWebhook = async (
             process.env.STRIPE_WEBHOOK_SECRET!
         );
     } catch (err: any) {
-        console.error("Webhook signature verification failed:", err.message);
+        log.error("Webhook signature verification failed", err.message);
         res.status(400).send(`Webhook Error: ${err.message}`);
         return;
     }
@@ -213,7 +216,7 @@ export const stripeWebhook = async (
                 }
             }
         } catch (error) {
-            console.error("Webhook processing error:", error);
+            log.error("Webhook processing failed", error);
         }
     }
 
@@ -247,7 +250,7 @@ export const getOrderHistory = async (
             },
         });
     } catch (error) {
-        console.error("Order history error:", error);
+        log.error("Failed to fetch order history", error);
         res.status(500).json({ message: "Server error fetching orders" });
     }
 };

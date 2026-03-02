@@ -5,7 +5,11 @@ interface User {
     id: string;
     name: string;
     email: string;
-    role: "admin" | "user";
+    role: "admin" | "user" | "seller";
+    sellerDetails?: {
+        storeName: string;
+        description: string;
+    };
 }
 
 interface AuthState {
@@ -70,6 +74,23 @@ export const getProfile = createAsyncThunk(
     }
 );
 
+export const becomeSellerContext = createAsyncThunk(
+    "auth/become-seller",
+    async (
+        data: { storeName: string; description: string },
+        { rejectWithValue }
+    ) => {
+        try {
+            const response = await api.post("/auth/become-seller", data);
+            return response.data;
+        } catch (error: any) {
+            return rejectWithValue(
+                error.response?.data?.message || "Failed to upgrade account"
+            );
+        }
+    }
+);
+
 const authSlice = createSlice({
     name: "auth",
     initialState,
@@ -120,6 +141,22 @@ const authSlice = createSlice({
 
         builder.addCase(getProfile.fulfilled, (state, action) => {
             state.user = action.payload.user;
+        });
+
+        builder.addCase(becomeSellerContext.pending, (state) => {
+            state.loading = true;
+            state.error = null;
+        });
+        builder.addCase(becomeSellerContext.fulfilled, (state, action) => {
+            state.loading = false;
+            state.user = action.payload.user;
+            state.token = action.payload.token;
+            localStorage.setItem("token", action.payload.token);
+            localStorage.setItem("user", JSON.stringify(action.payload.user));
+        });
+        builder.addCase(becomeSellerContext.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.payload as string;
         });
     },
 });

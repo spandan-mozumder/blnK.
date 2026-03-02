@@ -4,6 +4,7 @@ import {
     login,
     getProfile,
     createAdmin,
+    becomeSeller,
 } from "../controllers/authController";
 import { authenticate } from "../middleware/auth";
 import {
@@ -17,5 +18,6 @@ router.post("/register", registerValidation, register);
 router.post("/login", loginValidation, login);
 router.get("/profile", authenticate, getProfile);
 router.post("/create-admin", registerValidation, createAdmin);
+router.post("/become-seller", authenticate, becomeSeller);
 
 export default router;

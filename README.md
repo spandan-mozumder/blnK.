@@ -1,4 +1,4 @@
-# blnK — Full-Stack E-Commerce Platform
+# blnK. — Full-Stack E-Commerce Platform
 
 A modern e-commerce application built with React 19, Express, MongoDB, and Stripe.
 
@@ -39,7 +39,7 @@ cd ../client && bun install
 
 ```env
 PORT=5000
-MONGODB_URI=mongodb+srv://<user>:<pass>@cluster.mongodb.net/blnk
+MONGODB_URI=mongodb+srv://<user>:<pass>@cluster.mongodb.net/blnK.
 JWT_SECRET=your_jwt_secret_here
 STRIPE_SECRET_KEY=sk_test_...
 STRIPE_WEBHOOK_SECRET=whsec_...
@@ -70,7 +70,7 @@ cd client && bun run dev
 ## Project Structure
 
 ```
-blnK/
+blnK./
 ├── server/                 # Express API
 │   └── src/
 │       ├── config/         # DB connection
@@ -141,7 +141,7 @@ blnK/
 ```bash
 curl -X POST http://localhost:5000/api/auth/create-admin \
   -H "Content-Type: application/json" \
-  -d '{"name":"Admin","email":"admin@blnk.com","password":"admin123","adminSecret":"blnk-admin-secret-2024"}'
+  -d '{"name":"Admin","email":"admin@blnK..com","password":"admin123","adminSecret":"blnK.-admin-secret-2024"}'
 ```
 
 ---

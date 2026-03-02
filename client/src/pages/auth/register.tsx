@@ -68,7 +68,7 @@ export const RegisterPage = () => {
               to="/"
               className="mb-6 inline-block text-display-xs font-bold text-brand-tertiary text-shimmer"
             >
-              blnK
+              blnK.
             </Link>
           </div>
           <h1
@@ -81,7 +81,7 @@ export const RegisterPage = () => {
             className="auth-element mt-2 text-md text-tertiary"
             style={{ opacity: 0 }}
           >
-            Join blnK and start shopping today
+            Join blnK. and start shopping today
           </p>
         </div>
 

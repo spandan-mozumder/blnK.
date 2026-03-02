@@ -60,7 +60,6 @@ export const CheckoutSuccessPage = () => {
         "-=200"
       );
 
-    // Confetti-like particles
     const container = successRef.current;
     const particles: HTMLDivElement[] = [];
     for (let i = 0; i < 20; i++) {

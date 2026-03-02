@@ -4,6 +4,9 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../models/User";
 import { AuthRequest } from "../middleware/auth";
+import createLogger from "../utils/logger";
+
+const log = createLogger("Auth");
 
 const generateToken = (userId: string, role: string): string => {
     return jwt.sign({ userId, role }, process.env.JWT_SECRET!, {
@@ -55,7 +58,7 @@ export const register = async (
             },
         });
     } catch (error) {
-        console.error("Registration error:", error);
+        log.error("Registration failed", error);
         res.status(500).json({ message: "Server error during registration" });
     }
 };
@@ -95,7 +98,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
             },
         });
     } catch (error) {
-        console.error("Login error:", error);
+        log.error("Login failed", error);
         res.status(500).json({ message: "Server error during login" });
     }
 };
@@ -114,7 +117,7 @@ export const getProfile = async (
             },
         });
     } catch (error) {
-        console.error("Profile error:", error);
+        log.error("Failed to fetch profile", error);
         res.status(500).json({ message: "Server error" });
     }
 };
@@ -163,7 +166,62 @@ export const createAdmin = async (
             },
         });
     } catch (error) {
-        console.error("Admin creation error:", error);
+        log.error("Admin creation failed", error);
+        res.status(500).json({ message: "Server error" });
+    }
+};
+
+export const becomeSeller = async (
+    req: AuthRequest,
+    res: Response
+): Promise<void> => {
+    try {
+        const { storeName, description } = req.body;
+
+        if (!storeName || !description) {
+            res.status(400).json({ message: "Store name and description are required" });
+            return;
+        }
+
+        const user = await User.findById(req.user!._id);
+        if (!user) {
+            res.status(404).json({ message: "User not found" });
+            return;
+        }
+
+        if (user.role === "admin") {
+            res.status(400).json({ message: "Admins cannot become sellers" });
+            return;
+        }
+
+        if (user.role === "seller") {
+            res.status(400).json({ message: "User is already a seller" });
+            return;
+        }
+
+        user.role = "seller";
+        user.sellerDetails = {
+            storeName,
+            description,
+        };
+
+        await user.save();
+
+        const token = generateToken(user._id.toString(), user.role);
+
+        res.json({
+            message: "Successfully upgraded to seller account",
+            token,
+            user: {
+                id: user._id,
+                name: user.name,
+                email: user.email,
+                role: user.role,
+                sellerDetails: user.sellerDetails,
+            },
+        });
+    } catch (error) {
+        log.error("Become seller failed", error);
         res.status(500).json({ message: "Server error" });
     }
 };

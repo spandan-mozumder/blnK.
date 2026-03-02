@@ -23,7 +23,7 @@ export const AdminRoute = ({ children }: PropsWithChildren) => {
     return <Navigate to="/login" replace />;
   }
 
-  if (user.role !== "admin") {
+  if (user.role !== "admin" && user.role !== "seller") {
     return <Navigate to="/products" replace />;
   }
 

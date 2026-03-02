@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import type { RootState } from "./index";
 import api from "@/api/axios";
 
 interface Product {
@@ -100,9 +101,17 @@ export const fetchProductById = createAsyncThunk(
 
 export const createProduct = createAsyncThunk(
     "products/create",
-    async (data: Partial<Product>, { rejectWithValue }) => {
+    async (data: Partial<Product>, { dispatch, getState, rejectWithValue }) => {
         try {
             const response = await api.post("/products", data);
+            const state = getState() as RootState;
+            dispatch(fetchProducts({
+                page: 1,
+                search: state.products.filters.search,
+                category: state.products.filters.category,
+                sortBy: state.products.filters.sortBy,
+                order: state.products.filters.order,
+            }));
             return response.data;
         } catch (error: any) {
             return rejectWithValue(
@@ -116,10 +125,18 @@ export const updateProduct = createAsyncThunk(
     "products/update",
     async (
         { id, data }: { id: string; data: Partial<Product> },
-        { rejectWithValue }
+        { dispatch, getState, rejectWithValue }
     ) => {
         try {
             const response = await api.put(`/products/${id}`, data);
+            const state = getState() as RootState;
+            dispatch(fetchProducts({
+                page: state.products.filters.page,
+                search: state.products.filters.search,
+                category: state.products.filters.category,
+                sortBy: state.products.filters.sortBy,
+                order: state.products.filters.order,
+            }));
             return response.data;
         } catch (error: any) {
             return rejectWithValue(
@@ -131,9 +148,17 @@ export const updateProduct = createAsyncThunk(
 
 export const deleteProduct = createAsyncThunk(
     "products/delete",
-    async (id: string, { rejectWithValue }) => {
+    async (id: string, { dispatch, getState, rejectWithValue }) => {
         try {
             await api.delete(`/products/${id}`);
+            const state = getState() as RootState;
+            dispatch(fetchProducts({
+                page: state.products.filters.page,
+                search: state.products.filters.search,
+                category: state.products.filters.category,
+                sortBy: state.products.filters.sortBy,
+                order: state.products.filters.order,
+            }));
             return id;
         } catch (error: any) {
             return rejectWithValue(
@@ -183,17 +208,15 @@ const productSlice = createSlice({
         });
 
         builder.addCase(createProduct.fulfilled, (state, action) => {
-            state.products.unshift(action.payload.product);
+            if (action.payload?.product) {
+                state.currentProduct = action.payload.product;
+            }
         });
 
         builder.addCase(updateProduct.fulfilled, (state, action) => {
-            const index = state.products.findIndex(
-                (p) => p._id === action.payload.product._id
-            );
-            if (index !== -1) {
-                state.products[index] = action.payload.product;
+            if (action.payload?.product) {
+                state.currentProduct = action.payload.product;
             }
-            state.currentProduct = action.payload.product;
         });
 
         builder.addCase(deleteProduct.fulfilled, (state, action) => {

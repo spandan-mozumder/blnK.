@@ -4,7 +4,11 @@ export interface IUser extends Document {
     name: string;
     email: string;
     password: string;
-    role: "admin" | "user";
+    role: "admin" | "user" | "seller";
+    sellerDetails?: {
+        storeName: string;
+        description: string;
+    };
     createdAt: Date;
     updatedAt: Date;
 }
@@ -33,8 +37,20 @@ const userSchema = new Schema<IUser>(
         },
         role: {
             type: String,
-            enum: ["admin", "user"],
+            enum: ["admin", "user", "seller"],
             default: "user",
+        },
+        sellerDetails: {
+            storeName: {
+                type: String,
+                trim: true,
+                maxlength: [100, "Store name must not exceed 100 characters"],
+            },
+            description: {
+                type: String,
+                trim: true,
+                maxlength: [1000, "Description must not exceed 1000 characters"],
+            },
         },
     },
     {

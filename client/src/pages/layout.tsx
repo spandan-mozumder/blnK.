@@ -75,14 +75,13 @@ export const AppLayout = () => {
         ref={navRef}
       >
         <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-          {/* Left: Logo + Nav */}
           <div className="flex items-center gap-6">
             <Link
               to="/"
-              className="nav-item text-lg font-bold tracking-tight text-brand-tertiary"
+              className="nav-item text-lg font-bold tracking-tight text-brand-tertiary brand-underline"
               style={{ opacity: 0 }}
             >
-              blnK
+              blnK.
             </Link>
 
             <nav className="nav-item hidden items-center gap-1 md:flex" style={{ opacity: 0 }}>
@@ -102,7 +101,7 @@ export const AppLayout = () => {
                   onClick={() => navigate("/orders")}
                 />
               )}
-              {user?.role === "admin" && (
+              {(user?.role === "admin" || user?.role === "seller") && (
                 <NavLink
                   to="/admin"
                   icon={BarChartSquare02}
@@ -114,7 +113,6 @@ export const AppLayout = () => {
             </nav>
           </div>
 
-          {/* Right: Actions */}
           <div className="flex items-center gap-2">
             <div className="nav-item" style={{ opacity: 0 }}>
               <button
@@ -135,15 +133,24 @@ export const AppLayout = () => {
               <>
                 <div className="nav-item" style={{ opacity: 0 }}>
                   <button
-                    onClick={() =>
-                      navigate(user.role === "admin" ? "/admin" : "/orders")
-                    }
+                    onClick={() => navigate("/profile")}
                     className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-tertiary transition-all duration-200 hover:bg-secondary hover:text-primary cursor-pointer"
                   >
                     <User01 className="size-4" />
                     <span className="hidden sm:inline">{user.name}</span>
                   </button>
                 </div>
+                {user.role === "user" && (
+                  <div className="nav-item" style={{ opacity: 0 }}>
+                    <Button
+                      color="secondary-gray"
+                      size="sm"
+                      onClick={() => navigate("/become-seller")}
+                    >
+                      Become a Seller
+                    </Button>
+                  </div>
+                )}
                 <div className="nav-item" style={{ opacity: 0 }}>
                   <button
                     onClick={handleLogout}
@@ -191,10 +198,10 @@ export const AppLayout = () => {
               to="/"
               className="text-lg font-bold text-brand-tertiary"
             >
-              blnK
+              blnK.
             </Link>
             <p className="text-sm text-tertiary">
-              &copy; {new Date().getFullYear()} blnK. All rights reserved.
+              &copy; {new Date().getFullYear()} blnK.. All rights reserved.
             </p>
           </div>
         </div>
